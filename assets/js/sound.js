@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* ==========================================================
+     CASSANO SOUND SYSTEM
+     ========================================================== */
+
   const entrance = document.getElementById("sound-entrance");
   const enterButton = document.getElementById("enter-site");
   const music = document.getElementById("background-music");
@@ -16,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const VOLUME = 0.5;
 
   music.volume = VOLUME;
+  music.muted = false;
 
   /* ==========================================================
      STORAGE
@@ -23,171 +28,142 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const hasEntered = localStorage.getItem("cassanoEntered") === "true";
 
-  const soundMuted = localStorage.getItem("cassanoSoundMuted") === "true";
+  const savedMuted = localStorage.getItem("cassanoSoundMuted") === "true";
+
+  /* ==========================================================
+     STATE
+     ========================================================== */
+
+  let soundOn = false;
+  let processing = false;
 
   /* ==========================================================
      UI
      ========================================================== */
 
-  function updateSoundUI() {
-    if (music.muted || music.paused) {
-      soundControl.textContent = "♪ SOUND OFF";
-    } else {
-      soundControl.textContent = "♪ SOUND ON";
+  function setSoundUI(state) {
+    soundOn = state;
+
+    soundControl.textContent = state ? "♪ SOUND ON" : "♪ SOUND OFF";
+  }
+
+  /* ==========================================================
+     PLAY
+     ========================================================== */
+
+  async function turnSoundOn() {
+    if (processing) {
+      return;
+    }
+
+    processing = true;
+
+    try {
+      music.muted = false;
+      music.volume = VOLUME;
+
+      await music.play();
+
+      setSoundUI(true);
+
+      localStorage.setItem("cassanoSoundMuted", "false");
+
+      console.log("Cassano Sound: music playing.");
+    } catch (error) {
+      setSoundUI(false);
+
+      console.error("Cassano Sound: playback failed.", error);
+    } finally {
+      processing = false;
     }
   }
 
   /* ==========================================================
-     INITIAL AUDIO STATE
+     STOP
      ========================================================== */
 
-  music.volume = VOLUME;
-  music.muted = soundMuted;
+  function turnSoundOff() {
+    if (processing) {
+      return;
+    }
 
-  updateSoundUI();
+    processing = true;
+
+    music.pause();
+
+    /*
+     * Tunggu satu frame supaya browser selesai
+     * memproses pause sebelum UI diubah.
+     */
+
+    requestAnimationFrame(() => {
+      setSoundUI(false);
+
+      localStorage.setItem("cassanoSoundMuted", "true");
+
+      processing = false;
+
+      console.log("Cassano Sound: music stopped.");
+    });
+  }
+
+  /* ==========================================================
+     INITIAL UI
+     ========================================================== */
+
+  setSoundUI(false);
 
   /* ==========================================================
      RETURNING VISITOR
      ========================================================== */
 
   if (hasEntered) {
-    // User sudah pernah masuk sebelumnya.
-    // Langsung sembunyikan entrance.
     entrance.classList.add("hidden");
 
-    /*
-     * Jangan memaksa autoplay.
-     *
-     * Chrome mobile bisa mengizinkan atau menolak
-     * autoplay tergantung browser/session/user interaction.
-     */
-
-    if (!soundMuted) {
-      music
-        .play()
-        .then(() => {
-          // Autoplay berhasil.
-          music.volume = VOLUME;
-          updateSoundUI();
-
-          console.log("Cassano Sound: autoplay berhasil.");
-        })
-        .catch(() => {
-          /*
-           * Autoplay diblokir browser.
-           *
-           * Jangan mengubah localStorage menjadi muted,
-           * karena user sebenarnya tidak pernah mute.
-           */
-
-          console.log(
-            "Cassano Sound: autoplay blocked by browser. Waiting for user interaction.",
-          );
-
-          updateSoundUI();
-        });
+    if (!savedMuted) {
+      turnSoundOn();
     }
+  } else {
+    entrance.classList.remove("hidden");
   }
 
   /* ==========================================================
-     FIRST VISIT / ENTER SITE
+     ENTER SITE
      ========================================================== */
 
   enterButton.addEventListener("click", async () => {
-    try {
-      /*
-       * Karena ini berasal dari click user,
-       * browser biasanya mengizinkan audio.
-       */
-
-      music.muted = false;
-      music.volume = VOLUME;
-
-      await music.play();
-
-      /*
-       * Simpan bahwa user sudah pernah masuk.
-       */
-
-      localStorage.setItem("cassanoEntered", "true");
-
-      localStorage.setItem("cassanoSoundMuted", "false");
-
-      updateSoundUI();
-
-      /*
-       * Sembunyikan entrance setelah audio berhasil.
-       */
-
-      entrance.classList.add("hidden");
-
-      console.log("Cassano Sound: music started from ENTER SITE.");
-    } catch (error) {
-      console.error("Cassano Sound: failed to play.", error);
-
-      /*
-       * Jangan bikin user stuck di entrance.
-       *
-       * Tetap anggap user sudah masuk.
-       */
-
-      localStorage.setItem("cassanoEntered", "true");
-
-      entrance.classList.add("hidden");
-
-      updateSoundUI();
-    }
-  });
-
-  /* ==========================================================
-     SOUND ON / OFF
-     ========================================================== */
-
-  soundControl.addEventListener("click", async () => {
-    /*
-     * ========================================================
-     * SOUND OFF → TURN ON
-     * ========================================================
-     */
-
-    if (music.paused || music.muted) {
-      try {
-        music.muted = false;
-        music.volume = VOLUME;
-
-        await music.play();
-
-        localStorage.setItem("cassanoSoundMuted", "false");
-
-        updateSoundUI();
-
-        console.log("Cassano Sound: sound enabled.");
-      } catch (error) {
-        /*
-         * Ini biasanya hanya terjadi jika browser
-         * masih menganggap interaction tidak valid.
-         */
-
-        console.error("Cassano Sound: unable to play.", error);
-
-        updateSoundUI();
-      }
-
+    if (processing) {
       return;
     }
 
-    /*
-     * ========================================================
-     * SOUND ON → TURN OFF
-     * ========================================================
-     */
+    console.log("Cassano Sound: ENTER SITE clicked.");
 
-    music.pause();
+    localStorage.setItem("cassanoEntered", "true");
 
-    localStorage.setItem("cassanoSoundMuted", "true");
+    entrance.classList.add("hidden");
 
-    updateSoundUI();
+    await turnSoundOn();
+  });
 
-    console.log("Cassano Sound: sound disabled.");
+  /* ==========================================================
+     SOUND CONTROL
+     ========================================================== */
+
+  soundControl.addEventListener("click", () => {
+    console.log("Cassano Sound: control clicked.", {
+      soundOn,
+      paused: music.paused,
+      muted: music.muted,
+    });
+
+    if (processing) {
+      return;
+    }
+
+    if (soundOn) {
+      turnSoundOff();
+    } else {
+      turnSoundOn();
+    }
   });
 });
