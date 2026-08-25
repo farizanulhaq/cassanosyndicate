@@ -3312,7 +3312,6 @@ section,
   opacity: 0.3;
 }
 
-
 /* ==========================================================
    SOUND CONTROL
    ========================================================== */
@@ -3358,13 +3357,11 @@ section,
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-
 /* ==========================================================
    MOBILE
    ========================================================== */
 
 @media (max-width: 767px) {
-
   .sound-entrance-brand {
     font-size: 12px;
     letter-spacing: 4px;
@@ -3385,7 +3382,6 @@ section,
 
     padding: 9px 12px;
   }
-
 }
 
 /*--------------------------------------------------------------
@@ -3404,25 +3400,20 @@ section,
   text-align: center;
 
   background:
-    linear-gradient(
-      rgba(0, 0, 0, 0.72),
-      rgba(0, 0, 0, 0.88)
-    ),
-    url("../img/attributes/attributes-hero.webp")
-    center center / cover no-repeat;
+    linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.88)),
+    url("../img/attributes/main-patch.webp") center center / cover no-repeat;
 }
 
 .attributes-hero .hero-overlay {
   position: absolute;
   inset: 0;
 
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.9),
-      rgba(0, 0, 0, 0.35),
-      rgba(0, 0, 0, 0.9)
-    );
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.35),
+    rgba(0, 0, 0, 0.9)
+  );
 }
 
 .attributes-hero .hero-content {
@@ -3489,7 +3480,6 @@ section,
 --------------------------------------------------------------*/
 
 @media (max-width: 768px) {
-
   .attributes-hero {
     min-height: 350px;
   }
@@ -3520,18 +3510,13 @@ section,
 
     font-size: 13px;
   }
-
 }
 
-
 @media (max-width: 400px) {
-
   .attributes-hero h1 {
     font-size: 8vw;
   }
-
 }
-
 
 /*--------------------------------------------------------------
 # Attributes Intro
@@ -3548,7 +3533,6 @@ section,
 .attributes-intro .section-heading p {
   margin-top: 15px;
 }
-
 
 /*--------------------------------------------------------------
 # Attributes Category
@@ -3594,7 +3578,6 @@ section,
   letter-spacing: 1px;
 }
 
-
 /*--------------------------------------------------------------
 # Attribute Grid
 --------------------------------------------------------------*/
@@ -3606,7 +3589,23 @@ section,
 
   gap: 25px;
 }
+/*--------------------------------------------------------------
+# Center Last Attribute Card
+--------------------------------------------------------------*/
 
+.identity-grid .attribute-card:last-child,
+.officer-grid .attribute-card:last-child {
+  grid-column: 1 / -1;
+  width: calc((100% - 25px) / 2);
+  justify-self: center;
+}
+
+@media (max-width: 991px) {
+  .identity-grid .attribute-card:last-child,
+  .officer-grid .attribute-card:last-child {
+    width: 100%;
+  }
+}
 
 /*--------------------------------------------------------------
 # Attribute Card
@@ -3629,7 +3628,6 @@ section,
 
   border-color: var(--accent-color);
 }
-
 
 /*--------------------------------------------------------------
 # Attribute Image
@@ -3665,7 +3663,6 @@ section,
 .attribute-card:hover .attribute-image img {
   transform: scale(1.04);
 }
-
 
 /*--------------------------------------------------------------
 # Attribute Content
@@ -3709,7 +3706,6 @@ section,
   line-height: 1.7;
 }
 
-
 /*--------------------------------------------------------------
 # Attributes Note
 --------------------------------------------------------------*/
@@ -3749,22 +3745,17 @@ section,
   font-size: 14px;
 }
 
-
 /*--------------------------------------------------------------
 # Attributes Responsive
 --------------------------------------------------------------*/
 
 @media (max-width: 991px) {
-
   .attribute-grid {
     grid-template-columns: 1fr;
   }
-
 }
 
-
 @media (max-width: 768px) {
-
   .attributes-hero {
     min-height: 350px;
   }
@@ -3804,12 +3795,9 @@ section,
   .attributes-note .note-box {
     padding: 35px 25px;
   }
-
 }
 
-
 @media (max-width: 576px) {
-
   .attributes-hero {
     min-height: 300px;
   }
@@ -3829,5 +3817,4 @@ section,
   .attribute-image img {
     padding: 20px;
   }
-
 }

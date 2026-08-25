@@ -52,9 +52,21 @@
   /**
    * Premium Active Navbar
    */
-
   const navLinks = document.querySelectorAll("#navmenu a");
 
+  function setActiveNavLink(link) {
+    if (!link) return;
+
+    navLinks.forEach((navLink) => {
+      navLink.classList.remove("active");
+    });
+
+    link.classList.add("active");
+  }
+
+  /**
+   * Handle navbar clicks
+   */
   navLinks.forEach((link) => {
     link.addEventListener("click", () => {
       setActiveNavLink(link);
@@ -65,16 +77,23 @@
     });
   });
 
+  /**
+   * Smooth scroll for homepage sections
+   */
   document.querySelectorAll("a[data-scroll]").forEach((link) => {
     link.addEventListener("click", function (e) {
       e.preventDefault();
 
       const target = document.querySelector(this.getAttribute("href"));
 
+      if (!target) return;
+
+      setActiveNavLink(this);
+
       closeMobileNav();
 
       setTimeout(() => {
-        target?.scrollIntoView({
+        target.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
@@ -82,45 +101,48 @@
     });
   });
 
-  window.addEventListener("load", () => {
+  /**
+   * Active navbar based on current section
+   */
+  function updateActiveSection() {
     const sections = document.querySelectorAll("main section[id]");
 
     if (!sections.length) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
+    const scrollPosition = window.scrollY + 180;
 
-          const id = entry.target.getAttribute("id");
+    let currentSection = "hero";
 
-          let navLink = null;
-
-          switch (id) {
-            case "hero":
-              navLink = document.querySelector('#navmenu a[href="index.html"]');
-              break;
-
-            default:
-              navLink = document.querySelector(`#navmenu a[href="#${id}"]`);
-          }
-
-          if (navLink) {
-            setActiveNavLink(navLink);
-          }
-        });
-      },
-
-      {
-        rootMargin: "-120px 0px -45% 0px",
-
-        threshold: 0.35,
-      },
-    );
     sections.forEach((section) => {
-      observer.observe(section);
+      const sectionTop = section.offsetTop;
+
+      if (scrollPosition >= sectionTop) {
+        currentSection = section.id;
+      }
     });
-  }); // <-- menutup window.addEventListener("load", () => {
+
+    const activeLink = document.querySelector(
+      `#navmenu a[href="#${currentSection}"]`,
+    );
+
+    if (activeLink) {
+      setActiveNavLink(activeLink);
+    }
+  }
+
+  /**
+   * Initialize active section
+   */
+  window.addEventListener("load", () => {
+    updateActiveSection();
+  });
+
+  /**
+   * Update active section while scrolling
+   */
+  window.addEventListener("scroll", () => {
+    updateActiveSection();
+  });
   /**
    * Toggle mobile nav dropdowns
    */
