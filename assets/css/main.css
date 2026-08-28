@@ -2262,7 +2262,7 @@ section,
 
 .gallery-details .portfolio-description .testimonial-item p {
   font-style: italic;
-  margin: 0 0 15px 0 0 0;
+  margin: 0 0 15px 0;
   padding: 0;
 }
 
@@ -2899,10 +2899,6 @@ section,
   }
 }
 
-.protocol-page {
-  padding: 120px 0 80px;
-}
-
 .protocol-page .protocol-container {
   max-width: 900px;
   margin: 0 auto;
@@ -3485,37 +3481,62 @@ section,
   }
 
   .attributes-hero .hero-content {
+    width: 100%;
     padding: 0 15px;
+    box-sizing: border-box;
   }
 
   .attributes-hero .eyebrow {
     margin-bottom: 12px;
-
     font-size: 10px;
     letter-spacing: 3px;
   }
 
   .attributes-hero h1 {
-    /*
-     * Tetap satu baris di mobile.
-     * vw membuat ukuran mengikuti lebar layar.
-     */
-    font-size: clamp(24px, 8vw, 48px);
+    width: 100%;
 
-    letter-spacing: 1px;
+    margin: 0;
+
+    /*
+     * Tetap 1 baris, tapi ukuran mengikuti
+     * lebar layar.
+     */
+    font-size: clamp(20px, 6.2vw, 48px);
+
+    letter-spacing: 0.5px;
+
+    white-space: nowrap;
+    text-align: center;
   }
 
   .attributes-hero p {
     margin-top: 18px;
-
     font-size: 13px;
   }
 }
 
-@media (max-width: 400px) {
+/*--------------------------------------------------------------
+# Attributes Hero - Mobile Title Fix
+--------------------------------------------------------------*/
+
+@media (max-width: 768px) {
+
   .attributes-hero h1 {
-    font-size: 8vw;
+    width: 100% !important;
+    max-width: 100% !important;
+
+    font-size: 25px !important;
+    line-height: 1.1 !important;
+
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    text-align: center !important;
   }
+
 }
 
 /*--------------------------------------------------------------
@@ -3760,10 +3781,6 @@ section,
     min-height: 350px;
   }
 
-  .attributes-hero h1 {
-    font-size: 48px;
-  }
-
   .attributes-intro {
     padding: 60px 0 40px;
   }
@@ -3804,10 +3821,6 @@ section,
 
   .attributes-hero h1 {
     font-size: 40px;
-  }
-
-  .attributes-hero p {
-    font-size: 14px;
   }
 
   .category-heading {
